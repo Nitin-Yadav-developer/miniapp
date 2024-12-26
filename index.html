@@ -55,6 +55,17 @@
             margin-bottom: 16px;
         }
     </style>
+    <!-- Add debug script -->
+    <script>
+        function debugWebApp() {
+            if (window.Telegram.WebApp) {
+                console.log('WebApp initialized:', window.Telegram.WebApp);
+                return true;
+            }
+            console.error('WebApp not found');
+            return false;
+        }
+    </script>
 </head>
 <body>
     <div id="app">
@@ -72,16 +83,32 @@
     </div>
     <script src="app.js"></script>
     <script>
-        // Add this script to handle communication with the Telegram bot
         const tg = window.Telegram.WebApp;
+        
+        // Add initialization check
+        if (!tg) {
+            alert('Error: Please open this page through Telegram bot');
+            throw new Error('Telegram WebApp not initialized');
+        }
+
+        // Enable debug mode
+        tg.expand();
+        debugWebApp();
         
         function sendToBot(type, url) {
             const data = {
                 type: type,
                 url: url
             };
-            console.log('Sending to bot:', data);
-            tg.sendData(JSON.stringify(data));
+            console.log('Attempting to send data:', data);
+            try {
+                tg.ready();  // Ensure WebApp is ready
+                tg.sendData(JSON.stringify(data));
+                console.log('Data sent successfully');
+            } catch (e) {
+                console.error('Send error:', e);
+                alert('Error sending data to bot: ' + e.message);
+            }
         }
 
         document.getElementById('youtubeBtn').addEventListener('click', () => {
