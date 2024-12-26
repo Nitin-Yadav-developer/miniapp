@@ -55,7 +55,6 @@
             margin-bottom: 16px;
         }
     </style>
-    <base href="https://YOUR_USERNAME.github.io/telegram-downloader-app/">
 </head>
 <body>
     <div id="app">
@@ -81,6 +80,7 @@
                 type: type,
                 url: url
             };
+            console.log('Sending to bot:', data);
             tg.sendData(JSON.stringify(data));
         }
 

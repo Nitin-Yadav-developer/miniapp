@@ -1,4 +1,11 @@
 const tg = window.Telegram.WebApp;
+
+// Add initialization check
+if (!tg) {
+    console.error('Telegram WebApp is not properly initialized');
+    alert('Error: Telegram WebApp not initialized');
+}
+
 tg.expand();
 
 class DownloadManager {
@@ -44,7 +51,15 @@ class DownloadManager {
     }
 
     sendToBot(type, url) {
-        tg.sendData(JSON.stringify({ type, url }));
+        const data = { type, url };
+        console.log('Sending data to bot:', data);
+        try {
+            tg.sendData(JSON.stringify(data));
+            console.log('Data sent successfully');
+        } catch (error) {
+            console.error('Error sending data:', error);
+            this.showError('Failed to send request to bot');
+        }
     }
 
     handleBotResponse(message) {
@@ -72,7 +87,16 @@ class DownloadManager {
             </div>
         `).join('');
     }
+
+    showError(message) {
+        this.taskStatus.innerHTML = `<div class="error">${message}</div>`;
+    }
 }
 
-// Initialize the app
-const downloadManager = new DownloadManager();
+// Initialize with error handling
+try {
+    const downloadManager = new DownloadManager();
+    console.log('Download manager initialized');
+} catch (error) {
+    console.error('Failed to initialize download manager:', error);
+}
